@@ -4,7 +4,8 @@ from setuptools import setup, find_packages
 from os import environ as env
 import subprocess
 
-from pip.req import parse_requirements
+from pip._internal.req import parse_requirements
+# from pip.req import parse_requirements
 
 requirements = [str(req.req) for req in parse_requirements('requirements.txt', session=False)]
 requirements_plugins = [str(req.req) for req in parse_requirements('requirements-plugins.txt', session=False)]
