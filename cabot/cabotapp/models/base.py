@@ -405,9 +405,7 @@ class StatusCheck(PolymorphicModel):
     Base class for polymorphic models. We're going to use
     proxy models for inheriting because it makes life much simpler,
     but this allows us to stick different methods etc on subclasses.
-
     You can work out what (sub)class a model is an instance of by accessing `instance.polymorphic_ctype.model`
-
     We are using django-polymorphic for polymorphism
     """
 
@@ -491,7 +489,7 @@ class StatusCheck(PolymorphicModel):
     bearer_request_body = models.TextField(
         blank=True,
         null=True,
-        help_text='Define your credentials in json format to get access token. Learn to write json <a href="https://en.wikipedia.org/wiki/JSON" target="_blank">here</a>'
+        help_text='Define your URL parameters to get access token. Learn to write query string <a href="https://en.wikipedia.org/wiki/Query_string" target="_blank">here</a>'
     )
 
     text_match = models.TextField(
@@ -776,31 +774,26 @@ class HttpStatusCheck(StatusCheck):
 
         bearer_auth = None
         if self.bearer_endpoint or self.bearer_request_body:
-            bearer_body = None
             try:
-                bearer_body = json.loads(self.bearer_request_body)
-            except ValueError as e:
+                resp = requests.post(
+                    self.bearer_endpoint,
+                    data=self.bearer_request_body,
+                    headers={
+                        "User-Agent": settings.HTTP_USER_AGENT,
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                )
+            except requests.RequestException as e:
                 pass
             else:
-                try:
-                    resp = requests.post(
-                        self.bearer_endpoint,
-                        data=bearer_body,
-                        headers={
-                            "User-Agent": settings.HTTP_USER_AGENT,
-                        },
-                    )
-                except requests.RequestException as e:
-                    pass
-                else:
-                    bearer_auth = resp.json()['access_token']
+                bearer_auth = resp.json()['access_token']
 
         try:
             headers = {
                 "User-Agent": settings.HTTP_USER_AGENT,
             }
             if bearer_auth:
-                headers['authorization'] = u'Bearer %s' % bearer_auth
+                headers['Authorization'] = u'Bearer %s' % bearer_auth
             resp = requests.get(
                 self.endpoint,
                 timeout=self.timeout,
@@ -833,7 +826,6 @@ class StatusCheckResult(models.Model):
     """
     We use the same StatusCheckResult model for all check types,
     because really they are not so very different.
-
     Checks don't have to use all the fields, so most should be
     nullable
     """
