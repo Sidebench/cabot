@@ -475,11 +475,11 @@ class StatusCheck(PolymorphicModel):
         max_length=255,
         help_text='Request method.',
         choices=(
-            ('ge', 'GET'),
-            ('po', 'POST'),
-            ('pu', 'PUT'),
-            ('de', 'DELETE'),
-            ('pa', 'PATCH')
+            ('get', 'GET'),
+            ('post', 'POST'),
+            ('put', 'PUT'),
+            ('delete', 'DELETE'),
+            ('patch', 'PATCH')
         ),
         default='ge',
     )
@@ -811,10 +811,20 @@ class HttpStatusCheck(StatusCheck):
             }
             if bearer_auth:
                 headers['Authorization'] = u'Bearer %s' % bearer_auth
-            resp = requests.get(
-                self.endpoint,
+            body = None
+            if self.body and self.method != 'get':
+                try:
+                    body = json.loads(self.body)
+                except ValueError as e:
+                    pass
+                else:
+                    body = json.loads(self.body)
+            resp = requests.request(
+                method=self.method,
+                url=self.endpoint,
                 timeout=self.timeout,
                 verify=self.verify_ssl_certificate,
+                data=body,
                 auth=auth,
                 headers=headers,
             )
