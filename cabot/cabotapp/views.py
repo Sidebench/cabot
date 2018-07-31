@@ -237,6 +237,8 @@ class HttpStatusCheckForm(StatusCheckForm):
         fields = (
             'name',
             'endpoint',
+            'method',
+            'body',
             'username',
             'password',
             'bearer_endpoint',
@@ -255,6 +257,10 @@ class HttpStatusCheckForm(StatusCheckForm):
             'endpoint': forms.TextInput(attrs={
                 'style': 'width: 100%',
                 'placeholder': 'https://www.example.org/',
+            }),
+            # 'method': forms.CharField(label='Method'),
+            'body': forms.Textarea(attrs={
+                'style': 'width: 100%',
             }),
             'username': forms.TextInput(attrs={
                 'style': 'width: 30%',

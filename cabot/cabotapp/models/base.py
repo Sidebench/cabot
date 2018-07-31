@@ -471,6 +471,23 @@ class StatusCheck(PolymorphicModel):
         null=True,
         help_text='HTTP(S) endpoint to poll.',
     )
+    method = models.CharField(
+        max_length=255,
+        help_text='Request method.',
+        choices=(
+            ('ge', 'GET'),
+            ('po', 'POST'),
+            ('pu', 'PUT'),
+            ('de', 'DELETE'),
+            ('pa', 'PATCH')
+        ),
+        default='ge',
+    )
+    body = models.TextField(
+        blank=True,
+        null=True,
+        help_text='Request body, in case of GET request body is ignored.'
+    )
     username = models.TextField(
         blank=True,
         null=True,
