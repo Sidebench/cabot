@@ -486,7 +486,7 @@ class StatusCheck(PolymorphicModel):
     body = models.TextField(
         blank=True,
         null=True,
-        help_text='Request body, in case of GET request body is ignored.'
+        help_text='Request body in json format, Learn to write JSON <a href="https://en.wikipedia.org/wiki/JSON" target="_blank">here</a>. In case of GET request body is ignored.'
     )
     username = models.TextField(
         blank=True,
