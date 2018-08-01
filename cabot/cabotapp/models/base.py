@@ -471,6 +471,23 @@ class StatusCheck(PolymorphicModel):
         null=True,
         help_text='HTTP(S) endpoint to poll.',
     )
+    method = models.CharField(
+        max_length=255,
+        help_text='Request method.',
+        choices=(
+            ('get', 'GET'),
+            ('post', 'POST'),
+            ('put', 'PUT'),
+            ('delete', 'DELETE'),
+            ('patch', 'PATCH')
+        ),
+        default='ge',
+    )
+    body = models.TextField(
+        blank=True,
+        null=True,
+        help_text='Request body in json format, Learn to write JSON <a href="https://en.wikipedia.org/wiki/JSON" target="_blank">here</a>. In case of GET request body is ignored.'
+    )
     username = models.TextField(
         blank=True,
         null=True,
@@ -794,10 +811,20 @@ class HttpStatusCheck(StatusCheck):
             }
             if bearer_auth:
                 headers['Authorization'] = u'Bearer %s' % bearer_auth
-            resp = requests.get(
-                self.endpoint,
+            body = None
+            if self.body and self.method != 'get':
+                try:
+                    body = json.loads(self.body)
+                except ValueError as e:
+                    pass
+                else:
+                    body = json.loads(self.body)
+            resp = requests.request(
+                method=self.method,
+                url=self.endpoint,
                 timeout=self.timeout,
                 verify=self.verify_ssl_certificate,
+                data=body,
                 auth=auth,
                 headers=headers,
             )
