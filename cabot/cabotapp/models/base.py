@@ -844,8 +844,10 @@ class HttpStatusCheck(StatusCheck):
                     result.succeeded = False
                 else:
                     result.succeeded = True
+                    result.raw_data = resp.text
             else:
                 result.succeeded = True
+                result.raw_data = resp.text
         return result
 
 
