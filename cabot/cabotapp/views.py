@@ -244,6 +244,7 @@ class HttpStatusCheckForm(StatusCheckForm):
             'bearer_endpoint',
             'bearer_request_body',
             'text_match',
+            'json_schema',
             'status_code',
             'timeout',
             'verify_ssl_certificate',
@@ -280,6 +281,9 @@ class HttpStatusCheckForm(StatusCheckForm):
             'text_match': forms.TextInput(attrs={
                 'style': 'width: 100%',
                 'placeholder': '[Aa]rachnys\s+[Rr]ules',
+            }),
+            'json_schema': forms.Textarea(attrs={
+                'style': 'width: 100%',
             }),
             'status_code': forms.TextInput(attrs={
                 'style': 'width: 20%',

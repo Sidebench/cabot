@@ -514,6 +514,13 @@ class StatusCheck(PolymorphicModel):
         null=True,
         help_text='Regex to match against source of page.',
     )
+
+    json_schema = models.TextField(
+        blank=True,
+        null=True,
+        help_text='JSON Schema against response body.',
+    )
+
     status_code = models.TextField(
         default=200,
         null=True,

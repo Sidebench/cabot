@@ -30,8 +30,14 @@ function wait_for_migrations {
   done
 }
 
+function add_migrations {
+  python manage.py makemigrations
+  python manage.py migrate
+}
+
 wait_for_broker
 wait_for_database
+add_migrations
 
 if [ -z "$SKIP_INIT" ]; then
   /code/bin/build-app
