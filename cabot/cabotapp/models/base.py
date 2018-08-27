@@ -1,6 +1,8 @@
 import itertools
 import json
 import re
+import jsonschema
+import ast
 import subprocess
 import time
 from datetime import timedelta
@@ -514,6 +516,13 @@ class StatusCheck(PolymorphicModel):
         null=True,
         help_text='Regex to match against source of page.',
     )
+
+    json_schema = models.TextField(
+        blank=True,
+        null=True,
+        help_text='JSON Schema against response body.',
+    )
+
     status_code = models.TextField(
         default=200,
         null=True,
@@ -840,6 +849,14 @@ class HttpStatusCheck(StatusCheck):
             elif self.text_match:
                 if not self._check_content_pattern(self.text_match, resp.text):
                     result.error = u'Failed to find match regex /%s/ in response body' % self.text_match
+                    result.succeeded = False
+                else:
+                    result.succeeded = True
+            elif self.json_schema:
+                try:
+                    jsonschema.validate(json.loads(resp.text), ast.literal_eval(self.json_schema))
+                except jsonschema.exceptions.ValidationError as e:
+                    result.error = 'JSON validation error: %s' % (e.message)
                     result.succeeded = False
                 else:
                     result.succeeded = True

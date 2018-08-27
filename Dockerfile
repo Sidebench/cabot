@@ -33,6 +33,8 @@ RUN pip install --no-cache-dir -r requirements-dev.txt
 COPY requirements-plugins.txt ./
 RUN pip install --no-cache-dir -r requirements-plugins.txt
 
+RUN pip install jsonschema
+
 ADD . /code/
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
