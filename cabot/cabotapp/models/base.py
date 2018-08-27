@@ -2,7 +2,6 @@ import itertools
 import json
 import re
 import jsonschema
-import ast
 import subprocess
 import time
 from datetime import timedelta
@@ -854,7 +853,7 @@ class HttpStatusCheck(StatusCheck):
                     result.succeeded = True
             elif self.json_schema:
                 try:
-                    jsonschema.validate(json.loads(resp.text), ast.literal_eval(self.json_schema))
+                    jsonschema.validate(json.loads(resp.text), json.loads(self.json_schema))
                 except jsonschema.exceptions.ValidationError as e:
                     result.error = 'JSON validation error: %s' % (e.message)
                     result.succeeded = False
