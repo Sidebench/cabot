@@ -24,7 +24,7 @@ HTTP_USER_AGENT = os.environ.get('HTTP_USER_AGENT', 'Cabot')
 ALERT_INTERVAL = int(os.environ.get('ALERT_INTERVAL', 10))
 
 # How often should notifications be sent for less important issues?
-NOTIFICATION_INTERVAL = int(os.environ.get('NOTIFICATION_INTERVAL', 120))
+NOTIFICATION_INTERVAL = int(os.environ.get('NOTIFICATION_INTERVAL', 1440))
 
 # How long should an acknowledgement silence alerts for?
 ACKNOWLEDGEMENT_EXPIRY = int(os.environ.get('ACKNOWLEDGEMENT_EXPIRY', 20))
